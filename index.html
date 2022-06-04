@@ -1,0 +1,59 @@
+<Html>
+    <head>
+        <title>Camera Transform helper</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="styles.css"/>
+        <script src="ct.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <div class="flex-container">
+            <div>
+                <canvas id="canvas"></canvas>
+                <div id="background_image"><img src="lt1-sample1.jpg" id="background"/></div>
+            </div>
+            <div>
+                <label for="image_filename">image_filename</label>
+                <input id="image_filename" name="image_filename" type="file"><br/>
+                <label for="elevation_m">elevation_m</label>
+                <input id="elevation_m" name="elevation_m" value=""><br/>
+                <label for="pos_x_m">pos_x_m</label>
+                <input id="pos_x_m" name="pos_x_m" value=""><br/>
+                <label for="pos_y_m">pos_y_m</label>
+                <input id="pos_y_m" name="pos_y_m" value=""><br/>
+                <label for="tilt_deg">tilt_deg</label>
+                <input id="tilt_deg" name="tilt_deg" value=""><br/>
+                <label for="heading_deg">heading_deg</label>
+                <input id="heading_deg" name="heading_deg" value=""><br/>
+                <label for="roll_deg">roll_deg</label>
+                <input id="roll_deg" name="roll_deg" value=""><br/>
+                <label for="focallength_mm">focallength_mm</label>
+                <input id="focallength_mm" name="focallength_mm" value=""><br/>
+                <label for="sensor_width_mm">sensor_width_mm</label>
+                <input id="sensor_width_mm" name="sensor_width_mm" value=""><br/>
+                <label for="sensor_height_mm">sensor_height_mm</label>
+                <input id="sensor_height_mm" name="sensor_height_mm" value=""><br/>
+                <label for="xmin">xmin</label>
+                <input id="xmin" name="xmin" value=""><br/>
+                <label for="xmax">xmax</label>
+                <input id="xmax" name="xmax" value=""><br/>
+                <label for="xtickcount">xtickcount</label>
+                <input id="xtickcount" name="xtickcount" value=""><br/>
+                <label for="ymin">ymin</label>
+                <input id="ymin" name="ymin" value=""><br/>
+                <label for="ymax">ymax</label>
+                <input id="ymax" name="ymax" value=""><br/>
+                <label for="ytickcount">ytickcount</label>
+                <input id="ytickcount" name="ytickcount" value=""><br/>
+                <label for="image_width_px">image_width_px</label>
+                <input id="image_width_px" name="image_width_px" value=""><br/>
+                <label for="image_height_px">image_height_px</label>
+                <input id="image_height_px" name="image_height_px" value=""><br/>
+            </div>
+        </div>
+        <div id="status"></div>
+    </body>
+</html>
+
+
