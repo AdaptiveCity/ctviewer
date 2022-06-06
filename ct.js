@@ -77,7 +77,7 @@ function trigger(event, ui) {
 
 function changed_imagefile() {
     var files = $('#image_filename').prop('files');
-    console.log('changed_imagefile' + files);
+    //console.log('changed_imagefile' + files);
     if(files && files[0]) {
         var reader = new FileReader();
         $('#background').hide();
@@ -99,6 +99,27 @@ function changed_imagefile() {
     }
 }
 
+function changed_imageurl() {
+    let url = $('#image_url').val();
+    //console.log('changed_imageurl: ' + url);
+    if (url) {
+        $('#background').on('load', function (e) {
+            // when image is fully loaded get width/height
+            let w = $('#background').prop('width');
+            let h = $('#background').prop('height');
+            // set image_width/height_px
+            $('#image_width_px').spinner('value', w);
+            $('#image_width_px').spinner('disable');
+            $('#image_height_px').spinner('value', h);
+            $('#image_height_px').spinner('disable');
+            e.target.name = 'image_url';
+            trigger(e, {value: url});
+        }).on('error', function () {
+            console.log(`problem loading url: ${url}`);
+        }).attr('src', url);
+    }
+}
+
 function get_query_params() {
     return location.search ? location.search.substr(1).split`&`.reduce((qd, item) => {let [k,v] = item.split`=`; v = v && decodeURIComponent(v); (qd[k] = qd[k] || []).push(v); return qd}, {}) : {}
 }
@@ -117,6 +138,11 @@ function init_spinner(name, step, defaultv) {
 $(document).ready(function() {
     qp = get_query_params();
     $('#image_filename').change(changed_imagefile)
+    $('#image_url').change(changed_imageurl)
+    if('image_url' in qp) {
+        $('#image_url').val(qp['image_url']);
+        changed_imageurl();
+    }
     init_spinner('focallength_mm', 0.1, 7);
 	init_spinner('sensor_width_mm', 0.1, 6.7);
 	init_spinner('sensor_height_mm', 0.1, 5.6);
