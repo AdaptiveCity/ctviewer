@@ -65,6 +65,11 @@ function query_ct() {
 var current_timeoutID = null;
 
 function trigger(event, ui) {
+    if (event && event.target && ui) {
+        const url = new URL(window.location);
+        url.searchParams.set(event.target.name, ui.value);
+        window.history.replaceState({}, '', url);
+    }
     if (current_timeoutID != null)
         clearTimeout(current_timeoutID);
     current_timeoutID = setTimeout(query_ct, spin_timeout_ms);
@@ -94,42 +99,41 @@ function changed_imagefile() {
     }
 }
 
+function get_query_params() {
+    return location.search ? location.search.substr(1).split`&`.reduce((qd, item) => {let [k,v] = item.split`=`; v = v && decodeURIComponent(v); (qd[k] = qd[k] || []).push(v); return qd}, {}) : {}
+}
+
+var qp;
+
+function init_spinner(name, step, defaultv) {
+    if(name in qp)
+        v = Number(qp[name]);
+    else
+        v = defaultv;
+    $('#'+name).spinner({ step: step, spin: trigger });
+    $('#'+name).spinner('value', v);
+}
+
 $(document).ready(function() {
+    qp = get_query_params();
     $('#image_filename').change(changed_imagefile)
-    $('#focallength_mm').spinner({ step: 0.1, spin: trigger });
-    $('#focallength_mm').spinner('value', 7);
-	$('#sensor_width_mm').spinner({ step: 0.1, spin: trigger });
-	$('#sensor_width_mm').spinner('value', 6.7);
-	$('#sensor_height_mm').spinner({ step: 0.1, spin: trigger });
-	$('#sensor_height_mm').spinner('value', 5.6);
-	$('#image_width_px').spinner({ step: 1, spin: trigger });
-	$('#image_width_px').spinner('value', $('#background').prop('width'));
-	$('#image_height_px').spinner({ step: 1, spin: trigger });
-	$('#image_height_px').spinner('value', $('#background').prop('height'));
-	$('#elevation_m').spinner({ step: 0.1, spin: trigger });
-	$('#elevation_m').spinner('value', 1.8);
-	$('#pos_x_m').spinner({ step: 0.5, spin: trigger });
-	$('#pos_x_m').spinner('value', 0);
-	$('#pos_y_m').spinner({ step: 0.5, spin: trigger });
-	$('#pos_y_m').spinner('value', 0);
-	$('#tilt_deg').spinner({ step: 1, spin: trigger });
-	$('#tilt_deg').spinner('value', 0);
-	$('#heading_deg').spinner({ step: 1, spin: trigger });
-	$('#heading_deg').spinner('value', 0);
-	$('#roll_deg').spinner({ step: 1, spin: trigger });
-	$('#roll_deg').spinner('value', 0);
-	$('#xmin').spinner({ step: 1, spin: trigger });
-	$('#xmin').spinner('value', -10);
-	$('#xmax').spinner({ step: 1, spin: trigger });
-	$('#xmax').spinner('value', 10);
-	$('#xtickcount').spinner({ step: 1, spin: trigger });
-	$('#xtickcount').spinner('value', 31);
-	$('#ymin').spinner({ step: 1, spin: trigger });
-	$('#ymin').spinner('value', 0);
-	$('#ymax').spinner({ step: 1, spin: trigger });
-	$('#ymax').spinner('value', 20);
-	$('#ytickcount').spinner({ step: 1, spin: trigger });
-	$('#ytickcount').spinner('value', 31);
+    init_spinner('focallength_mm', 0.1, 7);
+	init_spinner('sensor_width_mm', 0.1, 6.7);
+	init_spinner('sensor_height_mm', 0.1, 5.6);
+	init_spinner('image_width_px', 1, $('#background').prop('width'));
+	init_spinner('image_height_px', 1, $('#background').prop('height'));
+	init_spinner('elevation_m', 0.1, 1.8);
+	init_spinner('pos_x_m', 0.5, 0);
+	init_spinner('pos_y_m', 0.5, 0);
+	init_spinner('tilt_deg', 1, 0);
+	init_spinner('heading_deg', 1, 0);
+	init_spinner('roll_deg', 1, 0);
+	init_spinner('xmin', 1, -10);
+	init_spinner('xmax', 1, 10);
+	init_spinner('xtickcount', 1, 31);
+	init_spinner('ymin', 1, 0);
+	init_spinner('ymax', 1, 20);
+	init_spinner('ytickcount', 1, 31);
     $('#background').hide();
     trigger();
 });
