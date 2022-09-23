@@ -50,7 +50,8 @@ function draw_grid(pts) {
 function query_ct() {
     params = {};
     keys.forEach(key => params[key] = $('#'+key).spinner('value'));
-    var res = $.get(cturl, params);
+    params['detections']=$('#detections').text()
+    var res = $.post(cturl, params);
 
     res.done(function (data) {
         //console.log('received data')
@@ -123,6 +124,18 @@ function changed_imageurl() {
     }
 }
 
+function changed_detectionsfile() {
+    var files = $('#detections_filename').prop('files');
+    console.log('changed_detectionsfile' + files);
+    if(files && files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#detections').text(JSON.stringify(JSON.parse(e.target.result)));
+        };
+        reader.readAsText(files[0]);
+    }
+}
+
 function get_query_params() {
     return location.search ? location.search.substr(1).split`&`.reduce((qd, item) => {let [k,v] = item.split`=`; v = v && decodeURIComponent(v); (qd[k] = qd[k] || []).push(v); return qd}, {}) : {}
 }
@@ -146,6 +159,7 @@ $(document).ready(function() {
         $('#image_url').val(qp['image_url']);
         changed_imageurl();
     }
+    $('#detections_filename').change(changed_detectionsfile)
     init_spinner('focallength_mm', 0.1, 7);
 	init_spinner('sensor_width_mm', 0.1, 6.7);
 	init_spinner('sensor_height_mm', 0.1, 5.6);

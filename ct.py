@@ -59,6 +59,7 @@ result['projection_params']=projparams
 result['spatial_params']=spatparams
 result['distortion_params']=distparams
 result['points_params']=ptsparams
+result['detections']=json.loads(form.getfirst('detections', '[]'))
 result['image_points']=[]
 
 if result['success']:
@@ -82,6 +83,11 @@ if result['success']:
         if 0 <= x and x < projparams['image_width_px'] and\
            0 <= y and y < projparams['image_height_px']:
            result['image_points'].append([x,y])
+    for det in result['detections']:
+        bottomCentre = np.array([det['x'] + det['w']/2, det['y'] + det['h']])
+        td = cam.spaceFromImage(bottomCentre)[:2]
+        det['td_x']=td[0]
+        det['td_y']=td[1]
 
 
 sys.stdout.write(json.dumps(result,indent=1))
