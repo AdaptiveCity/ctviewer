@@ -52,6 +52,7 @@ function draw_grid(pts, dets) {
 }
 
 function draw_topdown(dets) {
+    if(!dets?.length) return;
     const canvas = document.getElementById('topdown_canvas');
     const ctx = canvas.getContext('2d');
     let xmin = $('#xmin').spinner('value');
