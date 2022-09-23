@@ -162,7 +162,6 @@ function changed_detectionsfile() {
     //console.log('changed_detectionsfile' + files);
     if(files && files[0]) {
         var reader = new FileReader();
-        $('#detections').hide();
         reader.onload = function (e) {
             $('#detections').text(JSON.stringify(JSON.parse(e.target.result)));
             trigger(null, null);
@@ -215,6 +214,18 @@ $(document).ready(function() {
 	init_spinner('ymin', 1, 0);
 	init_spinner('ymax', 1, 20);
 	init_spinner('ytickcount', 1, 31);
+    $('#debug_checkbox').change(function () {
+        if($(this).is(':checked')) {
+            $('#status').show();
+            $('#detections').show();
+        } else {
+            $('#status').hide();
+            $('#detections').hide();
+        }
+    });
+
     $('#background').hide();
+    $('#status').hide();
+    $('#detections').hide();
     trigger();
 });
