@@ -23,7 +23,7 @@ const keys =
     'ymax',
     'ytickcount'];
 
-function draw_grid(pts) {
+function draw_grid(pts, dets) {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const bkgd = document.getElementById('background');
@@ -44,7 +44,39 @@ function draw_grid(pts) {
         ctx.arc(pt[0]*ratio_w, pt[1]*ratio_h, 2, 0, 2 * Math.PI);
         ctx.fill();
     });
+    ctx.strokeStyle='#00ff00';
+    dets.forEach(det => {
+        ctx.strokeRect(det['x']*ratio_w, det['y']*ratio_h, det['w']*ratio_w, det['h']*ratio_h);
+    });
 
+}
+
+function draw_topdown(dets) {
+    const canvas = document.getElementById('topdown_canvas');
+    const ctx = canvas.getContext('2d');
+    let xmin = $('#xmin').spinner('value');
+    let ymin = $('#ymin').spinner('value');
+    let xmax = $('#xmax').spinner('value');
+    let ymax = $('#ymax').spinner('value');
+    let w = xmax - xmin + 1;
+    let h = ymax - ymin + 1;
+    let new_w = 256; //FIXME: make configurable
+    let new_h = h/w*new_w;
+    let ratio_w = new_w/w;
+    let ratio_h = new_h/h;
+    $('#topdown_canvas').prop('width', new_w);
+    $('#topdown_canvas').prop('height', new_h);
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, new_w, new_h);
+    ctx.fillStyle = '#00ff00';
+    let k_w = 4; // zoom factor FIXME: make configurable
+    let k_h = 4;
+    dets.forEach(det => {
+        let td_x = Math.trunc(new_w/2.0 + det['td_x']*k_w*ratio_w/2.0);
+        let td_y = Math.trunc(new_h - det['td_y'] * k_h*ratio_h);
+        //console.log('td_x = ' + td_x + ' td_y = ' + td_y);
+        ctx.fillRect(td_x, td_y, 5, 5);
+    });
 }
 
 function query_ct() {
@@ -60,7 +92,8 @@ function query_ct() {
         } else {
             $('#status').text(JSON.stringify(data, null, 2));
             pts = data.image_points;
-            draw_grid(data.image_points);
+            draw_grid(data.image_points, data.detections);
+            draw_topdown(data.detections);
         }
     });
     return res;
@@ -126,11 +159,13 @@ function changed_imageurl() {
 
 function changed_detectionsfile() {
     var files = $('#detections_filename').prop('files');
-    console.log('changed_detectionsfile' + files);
+    //console.log('changed_detectionsfile' + files);
     if(files && files[0]) {
         var reader = new FileReader();
+        $('#detections').hide();
         reader.onload = function (e) {
             $('#detections').text(JSON.stringify(JSON.parse(e.target.result)));
+            trigger(null, null);
         };
         reader.readAsText(files[0]);
     }
