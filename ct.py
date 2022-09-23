@@ -16,6 +16,7 @@ sys.stdout.write("\n")
 
 projparams = {}
 spatparams = {}
+distparams = {}
 ptsparams = {}
 
 result = {}
@@ -43,6 +44,10 @@ check_key("tilt_deg", spatparams)
 check_key("heading_deg", spatparams)
 check_key("roll_deg", spatparams)
 
+check_key("distortion_k1", distparams)
+check_key("distortion_k2", distparams)
+check_key("distortion_k3", distparams)
+
 check_key("xmin", ptsparams)
 check_key("xmax", ptsparams)
 check_key("xtickcount", ptsparams, int)
@@ -52,12 +57,20 @@ check_key("ytickcount", ptsparams, int)
 
 result['projection_params']=projparams
 result['spatial_params']=spatparams
+result['distortion_params']=distparams
 result['points_params']=ptsparams
 result['image_points']=[]
 
 if result['success']:
+    if distparams['distortion_k1'] and \
+        (distparams['distortion_k1'] != 0 or distparams['distortion_k2'] != 0 or distparams['distortion_k3'] != 0):
+        dis = ct.BrownLensDistortion(distparams['distortion_k1'], distparams['distortion_k2'], distparams['distortion_k3']) 
+    else:
+        dis = None
+
     cam = ct.Camera(ct.RectilinearProjection(**projparams),
-                    ct.SpatialOrientation(**spatparams))
+                    ct.SpatialOrientation(**spatparams),
+                    dis)
     fakepts=list(itertools.product(np.linspace(ptsparams['xmin'],ptsparams['xmax'],ptsparams['xtickcount']),
                                    np.linspace(ptsparams['ymin'],ptsparams['ymax'],ptsparams['ytickcount'])))
     for worldpt in fakepts:

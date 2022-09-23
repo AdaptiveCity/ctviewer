@@ -13,6 +13,9 @@ const keys =
     'tilt_deg',
     'heading_deg',
     'roll_deg',
+    'distortion_k1',
+    'distortion_k2',
+    'distortion_k3',
     'xmin',
     'xmax',
     'xtickcount',
@@ -146,6 +149,9 @@ $(document).ready(function() {
     init_spinner('focallength_mm', 0.1, 7);
 	init_spinner('sensor_width_mm', 0.1, 6.7);
 	init_spinner('sensor_height_mm', 0.1, 5.6);
+	init_spinner('distortion_k1', 0.01, 0.0);
+	init_spinner('distortion_k2', 0.01, 0.0);
+	init_spinner('distortion_k3', 0.01, 0.0);
 	init_spinner('image_width_px', 1, $('#background').prop('width'));
 	init_spinner('image_height_px', 1, $('#background').prop('height'));
 	init_spinner('elevation_m', 0.1, 1.8);
