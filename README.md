@@ -27,3 +27,29 @@ The output shows the image with a grid of points (in red) projected onto it. Thi
 You may also specify a 'detections' file. This is a JSON file with a certain format showing bounding boxes for detected features (e.g. faces) in the image. The expected format of the detections file is: `[{'x': ..., 'y':, ..., 'w': ..., 'h': ...}, ...]` specifying the (x,y)-coords with width and height, all in pixels relative to the image in question. See the [https://github.com/AdaptiveCity/room_count] tool for producing detections files.
 
 These detections are sent to the server and transformed (reverse-projected). The resulting top-down view is shown below the image, showing where cameratransform thinks each detection is located in the image if it were possible to get a view from directly above.
+
+## Parameter descriptions
+
+- `elevation_m`: camera height in metres above the ground
+- `pos_x_m`: camera location on the X axis, in metres
+- `pos_y_m`: camera location on the Y axis, in metres
+- `tilt_deg`: camera tilt in degrees (0 is straight down, 90 is 'looking forward')
+- `heading_deg`: camera heading in degrees (0 is straight ahead, -90 is left and 90 is right)
+- `roll_deg`: camera roll in degrees (0 is level with the ground)
+- `focallength_mm`: camera focal length in millimetres
+- `sensor_width_mm`: camera sensor width in millimetres
+- `sensor_height_mm`: camera sensor height in millimetres
+  * defaults for the above 3 parameters chosen to roughly correspond to Raspberry Pi camera
+- `distortion_k1`: The K1 parameter for the Brown distortion model
+- `distortion_k2`: The K2 parameter for the Brown distortion model
+- `distortion_k3`: The K3 parameter for the Brown distortion model
+  * If using a fisheye lens some careful calibration is needed of the above 3 parameters
+- `xmin`: minimal boundary of the red dot grid, X axis
+- `xmax`: maximal boundary of the red dot grid, X axis
+- `xtickcount`: number of dots to draw along the X axis
+- `ymin`: minimal boundary of the red dot grid, Y axis
+- `ymax`: maximal boundary of the red dot grid, Y axis
+- `ytickcount`: number of dots to draw along the Y axis
+- `image_width_px`: pixel width of the image (not editable)
+- `image_height_px`: pixel height of the image (not editable)
+- `debug_output`: show the behind-the-scenes JSON (very spammy)
