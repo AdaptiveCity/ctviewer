@@ -28,6 +28,8 @@ You may also specify a 'detections' file. This is a JSON file with a certain for
 
 These detections are sent to the server and transformed (reverse-projected). The resulting top-down view is shown below the image, showing where cameratransform thinks each detection is located in the image if it were possible to get a view from directly above.
 
+For convenience, any changed parameters are reflected in the URL. Therefore, you can bookmark, copy/paste or somehow save the URL in order to save the parameters of interest.
+
 ## Parameter descriptions
 
 - `elevation_m`: camera height in metres above the ground
