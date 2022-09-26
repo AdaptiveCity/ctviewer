@@ -1,6 +1,11 @@
-const cturl = "ct.py";
-var spin_timeout_ms = 300;
+// configuration options
+//const cturl = "cgi-bin/ct.py";
+const cturl = "https://hf.space/embed/mdanish/ctviewer/+/api/predict";
+const spin_timeout_ms = 300;
 
+// end configuration
+
+const use_huggingface = cturl.includes('hf.space');
 const keys =
    ['focallength_mm',
     'sensor_width_mm',
@@ -84,10 +89,47 @@ function query_ct() {
     params = {};
     keys.forEach(key => params[key] = $('#'+key).spinner('value'));
     params['detections']=$('#detections').text()
-    var res = $.post(cturl, params);
+
+    // '{"data": [1,1,1,10,10,  0,0,0,0,0,  0,0,0,0,0,  0,0,0,0,0,  ""]}'
+    if (use_huggingface) {
+      hfparams = {"data": [
+        params['focallength_mm'],
+        params['sensor_width_mm'],
+        params['sensor_height_mm'],
+        params['image_width_px'],
+        params['image_height_px'],
+        params['elevation_m'],
+        params['pos_x_m'],
+        params['pos_y_m'],
+        params['tilt_deg'],
+        params['heading_deg'],
+        params['roll_deg'],
+        params['distortion_k1'],
+        params['distortion_k2'],
+        params['distortion_k3'],
+        params['xmin'],
+        params['xmax'],
+        params['xtickcount'],
+        params['ymin'],
+        params['ymax'],
+        params['ytickcount'],
+        params['detections']
+      ]};
+      params = hfparams;
+    }
+    var res = $.ajax ({
+        url: cturl,
+        type: "POST",
+        data: JSON.stringify(params),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+    });
+    //var res = $.post(cturl, params);
 
     res.done(function (data) {
         //console.log('received data')
+        if(use_huggingface)
+          data = data.data[0];
         if(!data.success) {
             $('#status').html(data.errormsgs.join('<br/>'));
         } else {
