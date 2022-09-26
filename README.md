@@ -12,7 +12,7 @@ The beginning of `ct.js` can be edited
 
 Put the files `index.html`, `ct.py` and `styles.css` in a web-accessible folder somewhere that Python scripts can be CGI-executed and direct your browser to `index.html`.
 
-Alternatively, run `ln -s . cgi-bin` and then you can use the python web server in the current directory. Set configuration parameter `cturl` to `cgi-bin/ct.py` and run `python3 -m http.server localhost 8080` or whichever port you like.
+Alternatively, run `ln -s . cgi-bin` and then you can use the python web server in the current directory. Set configuration parameter `cturl` to `cgi-bin/ct.py` and run `python3 -m http.server 8080` or whichever port you like.
 
 # Usage
 
