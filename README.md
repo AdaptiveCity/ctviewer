@@ -16,6 +16,8 @@ Alternatively, run `ln -s . cgi-bin` and then you can use the python web server 
 
 # Usage
 
+![Sample interface](adfa_sample1.jpg)
+
 The interface is very simplistic and simply gives you a handle on many different parameters you can tweak for cameratransform. You can specify an image file to project the coordinates on. This image file IS NOT UPLOADED to the server! It is entirely client-side. The only data that goes to and from the server are numbers for the parameters and coordinates for the points. All drawing is done on the client-side.
 
 The image may be specified also as a URL instead, if you would rather use a publicly-accessible image from the web.
