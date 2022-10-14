@@ -92,7 +92,7 @@ function draw_topdown(dets) {
     }
     let k_w = 4; // zoom factor FIXME: make configurable
     let k_h = 4;
-    ctx.fillStyle = '#00ff00';
+    ctx.fillStyle = '#0000ff';
     dets.forEach(det => {
         let td_x = Math.trunc(new_w/2.0 + det['td_x']*k_w*ratio_w/2.0);
         let td_y = Math.trunc(new_h - det['td_y'] * k_h*ratio_h);
