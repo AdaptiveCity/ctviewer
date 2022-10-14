@@ -60,23 +60,39 @@ function draw_topdown(dets) {
     if(!dets?.length) return;
     const canvas = document.getElementById('topdown_canvas');
     const ctx = canvas.getContext('2d');
+    const planview = document.getElementById('planview');
+    var new_w, new_h, ratio_w, ratio_h;
     let xmin = $('#xmin').spinner('value');
     let ymin = $('#ymin').spinner('value');
     let xmax = $('#xmax').spinner('value');
     let ymax = $('#ymax').spinner('value');
     let w = xmax - xmin + 1;
     let h = ymax - ymin + 1;
-    let new_w = 256; //FIXME: make configurable
-    let new_h = h/w*new_w;
-    let ratio_w = new_w/w;
-    let ratio_h = new_h/h;
-    $('#topdown_canvas').prop('width', new_w);
-    $('#topdown_canvas').prop('height', new_h);
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, new_w, new_h);
-    ctx.fillStyle = '#00ff00';
+    if (planview.src != '') {
+      let img_w = $('#planview').prop('width');
+      let img_h = $('#planview').prop('height');
+      new_w = 512; //FIXME: make configurable
+      new_h = img_h/img_w*new_w;
+      ratio_w = new_w/w;
+      ratio_h = new_h/h;
+      // setting prop erases the canvas
+      $('#topdown_canvas').prop('width', new_w);
+      $('#topdown_canvas').prop('height', new_h);
+      ctx.drawImage(planview, 0, 0, new_w, new_h);
+    } else {
+      new_w = 512; //FIXME: make configurable
+      new_h = h/w*new_w;
+      ratio_w = new_w/w;
+      ratio_h = new_h/h;
+      // setting prop erases the canvas
+      $('#topdown_canvas').prop('width', new_w);
+      $('#topdown_canvas').prop('height', new_h);
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, new_w, new_h); // black background
+    }
     let k_w = 4; // zoom factor FIXME: make configurable
     let k_h = 4;
+    ctx.fillStyle = '#00ff00';
     dets.forEach(det => {
         let td_x = Math.trunc(new_w/2.0 + det['td_x']*k_w*ratio_w/2.0);
         let td_y = Math.trunc(new_h - det['td_y'] * k_h*ratio_h);
@@ -200,6 +216,51 @@ function changed_imageurl() {
     }
 }
 
+function changed_planviewfile() {
+    var files = $('#planview_filename').prop('files');
+    //console.log('changed_planviewfile' + files);
+    if(files && files[0]) {
+        var reader = new FileReader();
+        $('#planview').hide();
+        reader.onload = function (e) {
+            $('#planview').ready(function () {
+                // when planview is fully loaded get width/height
+                let w = $('#planview').prop('width');
+                let h = $('#planview').prop('height');
+                // set planview_width/height_px
+                // $('#planview_width_px').spinner('value', w);
+                // $('#planview_width_px').spinner('disable');
+                // $('#planview_height_px').spinner('value', h);
+                // $('#planview_height_px').spinner('disable');
+                trigger(null, null);
+            });
+            $('#planview').attr('src', e.target.result);
+        };
+        reader.readAsDataURL(files[0]);
+    }
+}
+
+function changed_planviewurl() {
+    let url = $('#planview_url').val();
+    //console.log('changed_planviewurl: ' + url);
+    if (url) {
+        $('#planview').on('load', function (e) {
+            // when planview is fully loaded get width/height
+            let w = $('#planview').prop('width');
+            let h = $('#planview').prop('height');
+            // set planview_width/height_px
+            //$('#planview_width_px').spinner('value', w);
+            //$('#planview_width_px').spinner('disable');
+            //$('#planview_height_px').spinner('value', h);
+            //$('#planview_height_px').spinner('disable');
+            e.target.name = 'planview_url';
+            trigger(e, {value: url});
+        }).on('error', function () {
+            console.log(`problem loading url: ${url}`);
+        }).attr('src', url);
+    }
+}
+
 function changed_detectionsfile() {
     var files = $('#detections_filename').prop('files');
     //console.log('changed_detectionsfile' + files);
@@ -236,6 +297,12 @@ $(document).ready(function() {
         $('#image_url').val(qp['image_url']);
         changed_imageurl();
     }
+    $('#planview_filename').change(changed_planviewfile)
+    $('#planview_url').change(changed_planviewurl)
+    if('planview_url' in qp) {
+        $('#planview_url').val(qp['planview_url']);
+        changed_planviewurl();
+    }
     $('#detections_filename').change(changed_detectionsfile)
     init_spinner('focallength_mm', 0.1, 7);
 	init_spinner('sensor_width_mm', 0.1, 6.7);
@@ -268,6 +335,7 @@ $(document).ready(function() {
     });
 
     $('#background').hide();
+    $('#planview').hide();
     $('#status').hide();
     $('#detections').hide();
     trigger();
